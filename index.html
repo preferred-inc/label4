@@ -71,6 +71,7 @@
 <script type="text/javascript">
     pdfjsLib.GlobalWorkerOptions.workerSrc = '/label4/build/pdf.worker.js';
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="text/javascript" src="/label4/script.js" defer></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" referrerpolicy="no-referrer">
 <link rel="stylesheet" href="/label4/fonts.css">
@@ -100,6 +101,9 @@
     <div class="header-right">
       <button class="btn-icon" id="layout-toggle" onclick="toggleLayout()" title="レイアウト切替">
         <i class="fa-solid fa-table-cells"></i>
+      </button>
+      <button class="btn-icon" onclick="exportPDF()" title="PDF保存">
+        <i class="fa-solid fa-download"></i>
       </button>
       <button class="btn-icon" onclick="printPage()" title="印刷">
         <i class="fa-solid fa-print"></i>
@@ -274,7 +278,7 @@
       <li>枠をクリック、またはPDFをドラッグ&ドロップ</li>
       <li>複数ページのPDFは自動で次のスロットに展開</li>
       <li><i class="fa-solid fa-table-cells"></i> で2面 / 4面を切り替え</li>
-      <li>右上の <i class="fa-solid fa-print"></i> ボタンでA4用紙に印刷</li>
+      <li><i class="fa-solid fa-download"></i> でPDF保存 / <i class="fa-solid fa-print"></i> で直接印刷</li>
     </ol>
     <p class="modal-note"><i class="fa-solid fa-lock"></i> データは一切サーバに送信されません</p>
     <p class="modal-carriers">対応: クリックポスト / レターパック / ゆうパケット / ネコポス / その他PDF全般</p>
@@ -285,6 +289,12 @@
     </div>
   </div>
 </div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Stats badge -->
+<div id="stats-badge"></div>
 
 <script type="text/javascript" src="/label4/dialog.js"></script>
 </body>

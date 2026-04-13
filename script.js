@@ -8,6 +8,126 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// --- i18n ---
+const LANG = (navigator.language || '').startsWith('ja') ? 'ja' : 'en';
+const I18N = {
+  ja: {
+    selectPDF: 'PDFファイルを選択してください',
+    readError: 'PDFファイルを読み込めませんでした',
+    noLabels: '印刷する伝票がありません',
+    printConfirm: (pages, labels, saved) =>
+      'A4 ' + pages + '枚に ' + labels + '枚の伝票を印刷します。' +
+      (saved > 0 ? '\n(' + saved + '枚の用紙を節約!)' : ''),
+    saved: (n) => 'A4 ' + n + '枚節約!',
+    loaded: (name) => name + ' を読み込みました',
+    cleared: 'すべて削除しました',
+    removed: 'スロットを削除しました',
+    exported: 'PDFをダウンロードしました',
+    statsTotal: (n) => '累計 ' + n + '枚印刷',
+    statsSaved: (n) => n + '枚節約',
+  },
+  en: {
+    selectPDF: 'Please select a PDF file',
+    readError: 'Failed to load PDF',
+    noLabels: 'No labels to print',
+    printConfirm: (pages, labels, saved) =>
+      'Print ' + labels + ' labels on ' + pages + ' A4 sheet(s).' +
+      (saved > 0 ? '\n(' + saved + ' sheet(s) saved!)' : ''),
+    saved: (n) => n + ' sheet(s) saved!',
+    loaded: (name) => 'Loaded ' + name,
+    cleared: 'All cleared',
+    removed: 'Slot cleared',
+    exported: 'PDF downloaded',
+    statsTotal: (n) => n + ' labels printed',
+    statsSaved: (n) => n + ' sheets saved',
+  },
+};
+function t(key, ...args) {
+  const fn = I18N[LANG][key] || I18N.ja[key];
+  return typeof fn === 'function' ? fn(...args) : fn;
+}
+
+// --- Toast notifications ---
+function toast(message, type) {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+  const el = document.createElement('div');
+  el.className = 'toast' + (type ? ' toast-' + type : '');
+  el.textContent = message;
+  container.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
+  }, 2500);
+}
+
+// --- Stats (localStorage) ---
+function getStats() {
+  try {
+    return JSON.parse(localStorage.getItem('label4_stats')) || { printed: 0, saved: 0 };
+  } catch { return { printed: 0, saved: 0 }; }
+}
+function saveStats(stats) {
+  try { localStorage.setItem('label4_stats', JSON.stringify(stats)); } catch {}
+}
+function recordPrint(labels, pageCount) {
+  const stats = getStats();
+  stats.printed += labels;
+  stats.saved += (labels - pageCount);
+  saveStats(stats);
+  updateStatsBadge();
+}
+function updateStatsBadge() {
+  const el = document.getElementById('stats-badge');
+  if (!el) return;
+  const stats = getStats();
+  if (stats.printed > 0) {
+    el.textContent = t('statsTotal', stats.printed) + ' / ' + t('statsSaved', stats.saved);
+    el.style.display = 'block';
+  }
+}
+
+// --- Slot swap ---
+let swapSource = null;
+function initSlotSwap() {
+  document.addEventListener('click', (e) => {
+    const form = e.target.closest('form.selected');
+    if (!form || e.target.closest('.slot-remove') || e.target.closest('label')) return;
+
+    if (!swapSource) {
+      swapSource = form;
+      form.classList.add('swap-active');
+    } else if (swapSource === form) {
+      swapSource.classList.remove('swap-active');
+      swapSource = null;
+    } else {
+      // Swap canvases
+      const c1 = swapSource.querySelector('canvas');
+      const c2 = form.querySelector('canvas');
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = c1.width; tempCanvas.height = c1.height;
+      tempCanvas.getContext('2d').drawImage(c1, 0, 0);
+
+      const ctx1 = c1.getContext('2d');
+      c1.width = c2.width; c1.height = c2.height;
+      ctx1.drawImage(c2, 0, 0);
+
+      const ctx2 = c2.getContext('2d');
+      c2.width = tempCanvas.width; c2.height = tempCanvas.height;
+      ctx2.drawImage(tempCanvas, 0, 0);
+
+      swapSource.classList.remove('swap-active');
+      swapSource = null;
+      toast(LANG === 'ja' ? '入れ替えました' : 'Swapped');
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded', () => {
+  initSlotSwap();
+  updateStatsBadge();
+});
+
 let slotCounter = 4; // for generating unique input IDs
 
 function getLayout() {
@@ -51,6 +171,7 @@ function removeSlot(btn) {
   canvas.height = 3508;
   updateCounter();
   cleanupEmptyPages();
+  toast(t('removed'));
 }
 
 // Create a new page with empty slots
@@ -112,37 +233,77 @@ function ensureEmptySlot() {
 
 function clearPDF() {
   const content = document.getElementById('content');
-  // Remove all pages except the first
   const pages = content.querySelectorAll('.print-page');
   for (let i = 1; i < pages.length; i++) {
     pages[i].remove();
   }
-  // Reset first page slots
   if (pages[0]) {
     pages[0].querySelectorAll('form').forEach((form) => {
       form.querySelector('input[type="file"]').value = '';
       form.classList.remove('selected');
     });
   }
+  document.querySelector('#current-file').textContent = '';
   updateCounter();
+  toast(t('cleared'));
 }
 
 function printPage() {
   const labels = document.querySelectorAll('form.selected').length;
   if (labels === 0) {
-    alert('印刷する伝票がありません');
+    toast(t('noLabels'), 'error');
     return;
   }
   const pages = document.querySelectorAll('#content .print-page');
-  // Count pages that have at least one selected form
   const filledPages = Array.from(pages).filter((p) => p.querySelector('form.selected')).length;
-  const perPage = getSlotsPerPage();
   const saved = labels - filledPages;
-  const msg = 'A4 ' + filledPages + '枚に ' + labels + '枚の伝票を印刷します。' +
-    (saved > 0 ? '\n(' + saved + '枚の用紙を節約!)' : '');
-  if (confirm(msg)) {
+  if (confirm(t('printConfirm', filledPages, labels, saved))) {
+    recordPrint(labels, filledPages);
     window.print();
   }
+}
+
+// PDF Export using jsPDF
+function exportPDF() {
+  const labels = document.querySelectorAll('form.selected').length;
+  if (labels === 0) {
+    toast(t('noLabels'), 'error');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const pages = Array.from(document.querySelectorAll('#content .print-page')).filter(
+    (p) => p.querySelector('form.selected')
+  );
+  const layout = getLayout();
+  const slotsPerPage = layout === '2' ? 2 : 4;
+
+  // A4 dimensions in mm
+  const W = 210, H = 297;
+  const cols = layout === '2' ? 1 : 2;
+  const rows = 2;
+  const slotW = W / cols;
+  const slotH = H / rows;
+
+  pages.forEach((page, pi) => {
+    if (pi > 0) doc.addPage();
+    const forms = Array.from(page.querySelectorAll('form'));
+    forms.forEach((form, fi) => {
+      if (fi >= slotsPerPage || !form.classList.contains('selected')) return;
+      const canvas = form.querySelector('canvas');
+      const imgData = canvas.toDataURL('image/jpeg', 0.92);
+      const col = fi % cols;
+      const row = Math.floor(fi / cols);
+      doc.addImage(imgData, 'JPEG', col * slotW, row * slotH, slotW, slotH);
+    });
+  });
+
+  const filledPages = pages.length;
+  const saved = labels - filledPages;
+  recordPrint(labels, filledPages);
+  doc.save('label4-' + new Date().toISOString().slice(0, 10) + '.pdf');
+  toast(t('exported'), 'success');
 }
 
 function updateCounter() {
@@ -350,6 +511,7 @@ function loadPDFIntoSlot(file, form) {
 
       document.querySelector('#current-file').textContent = file.name;
       updateCounter();
+      toast(t('loaded', file.name), 'success');
     }).catch(function () {
       icon.className = 'fa-solid fa-file-arrow-up';
       dropzone.classList.remove('loading');
@@ -369,7 +531,7 @@ function inputPDF() {
   const file = this.files[0];
 
   if (!file || file.type !== 'application/pdf') {
-    alert('PDFファイルを選択してください');
+    toast(t('selectPDF'), 'error');
     return;
   }
 
@@ -418,10 +580,11 @@ function inputPDF() {
 
       document.querySelector('#current-file').textContent = file.name;
       updateCounter();
+      toast(t('loaded', file.name), 'success');
     }).catch(function () {
       icon.className = 'fa-solid fa-file-arrow-up';
       dropzone.classList.remove('loading');
-      alert('PDFファイルを読み込めませんでした');
+      toast(t('readError'), 'error');
     });
   };
 
