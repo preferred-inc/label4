@@ -93,7 +93,51 @@ function printPage() {
 function updateCounter() {
   const selected = document.querySelectorAll('form.selected').length;
   document.querySelector('#file-counter').textContent = selected;
+  updateSavedCounter(selected);
 }
+
+// Paper saving counter
+function updateSavedCounter(labelCount) {
+  const el = document.getElementById('saved-counter');
+  if (!el) return;
+  const layout = getLayout();
+  const perPage = layout === '2' ? 2 : 4;
+  if (labelCount <= 1) {
+    el.textContent = '';
+    return;
+  }
+  const pagesNeeded = Math.ceil(labelCount / perPage);
+  const saved = labelCount - pagesNeeded;
+  if (saved > 0) {
+    el.textContent = 'A4 ' + saved + '枚節約!';
+  } else {
+    el.textContent = '';
+  }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function (e) {
+  // Ctrl/Cmd + P: print
+  if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+    e.preventDefault();
+    printPage();
+  }
+  // Ctrl/Cmd + N: add page
+  if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+    e.preventDefault();
+    addPage();
+  }
+  // Ctrl/Cmd + L: toggle layout
+  if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+    e.preventDefault();
+    toggleLayout();
+  }
+  // Ctrl/Cmd + Delete/Backspace: clear all
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'Delete' || e.key === 'Backspace')) {
+    e.preventDefault();
+    clearPDF();
+  }
+});
 
 // Layout toggle: 2-up / 4-up
 function toggleLayout() {

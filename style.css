@@ -287,6 +287,13 @@ body {
   color: var(--accent);
 }
 
+.saved-counter {
+  font-size: 13px;
+  font-weight: 700;
+  color: #22c55e;
+  margin-left: 12px;
+}
+
 /* AdSense slot */
 #ad-slot {
   max-width: 640px;
@@ -429,6 +436,27 @@ body {
   .recommend-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* Footer nav (carrier links) */
+#footer-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 16px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+#footer-nav a {
+  font-size: 12px;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+#footer-nav a:hover {
+  text-decoration: underline;
 }
 
 /* Share buttons */
@@ -589,6 +617,25 @@ body {
   font-size: 11px;
   color: #999;
   text-align: center;
+}
+
+.modal-shortcuts {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 11px;
+  color: #999;
+}
+
+.modal-shortcuts kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-family: monospace;
+  background: #f0f2f5;
+  border: 1px solid #ddd;
+  border-radius: 3px;
 }
 
 /* Drag & drop state */

@@ -81,6 +81,9 @@
 <link rel="preload" as="font" href="https://fonts.gstatic.com/s/bizudgothic/v12/daafSTouBF7RUjnbt8p3LuKttQ.ttf" crossorigin="anonymous">
 <link rel="preload" as="font" href="https://fonts.gstatic.com/s/bizudpgothic/v14/hES36X5pHAIBjmS84VL0Bue83nU.ttf" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<!-- Google Analytics: uncomment and replace G-XXXXX with your Measurement ID -->
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXX"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXX');</script> -->
 </head>
 <body>
 <div id="wrapper">
@@ -167,6 +170,7 @@
     <button onclick="addPage()" class="btn-add-page">
       <i class="fa-solid fa-plus"></i> ページ追加
     </button>
+    <span id="saved-counter" class="saved-counter"></span>
   </div>
 
   <!-- AdSense placeholder: uncomment and replace ca-pub-XXXXX when approved -->
@@ -241,12 +245,18 @@
     </a>
   </div>
 
+  <nav id="footer-nav" aria-label="キャリア別ガイド">
+    <a href="/label4/clickpost/">クリックポスト</a>
+    <a href="/label4/letterpack/">レターパック</a>
+    <a href="/label4/yupacket/">ゆうパケット</a>
+    <a href="/label4/nekopos/">ネコポス</a>
+    <a href="/label4/blog/">使い方ガイド</a>
+  </nav>
+
   <footer id="footer">
     <span>運営: <a href="https://pref.co.jp" target="_blank" rel="noopener">株式会社プリファード</a></span>
     <span class="footer-sep">|</span>
     <span>&copy; 2025 Preferred-Inc</span>
-    <span class="footer-sep">|</span>
-    <a href="/label4/blog/">使い方ガイド</a>
   </footer>
 </div>
 
@@ -263,6 +273,11 @@
     </ol>
     <p class="modal-note"><i class="fa-solid fa-lock"></i> データは一切サーバに送信されません</p>
     <p class="modal-carriers">対応: クリックポスト / レターパック / ゆうパケット / ネコポス / その他PDF全般</p>
+    <div class="modal-shortcuts">
+      <span><kbd>Ctrl</kbd>+<kbd>P</kbd> 印刷</span>
+      <span><kbd>Ctrl</kbd>+<kbd>N</kbd> ページ追加</span>
+      <span><kbd>Ctrl</kbd>+<kbd>L</kbd> レイアウト切替</span>
+    </div>
   </div>
 </div>
 
