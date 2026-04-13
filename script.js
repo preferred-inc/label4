@@ -25,6 +25,7 @@ function createSlot() {
   const form = document.createElement('form');
   form.innerHTML =
     '<canvas width="2480" height="3508"></canvas>' +
+    '<button type="button" class="slot-remove" onclick="removeSlot(this)" title="削除">&times;</button>' +
     '<label for="' + id + '">' +
       '<input id="' + id + '" type="file" accept="application/pdf" onchange="inputPDF.call(this)">' +
       '<div class="dropzone">' +
@@ -37,10 +38,28 @@ function createSlot() {
   return form;
 }
 
+// Remove a single slot's content
+function removeSlot(btn) {
+  const form = btn.closest('form');
+  form.classList.remove('selected');
+  const input = form.querySelector('input[type="file"]');
+  if (input) input.value = '';
+  const canvas = form.querySelector('canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  canvas.width = 2480;
+  canvas.height = 3508;
+  updateCounter();
+  cleanupEmptyPages();
+}
+
 // Create a new page with empty slots
 function createPage() {
   const page = document.createElement('div');
   page.className = 'print-page';
+  const badge = document.createElement('span');
+  badge.className = 'page-badge';
+  page.appendChild(badge);
   const count = getSlotsPerPage();
   for (let i = 0; i < count; i++) {
     page.appendChild(createSlot());
@@ -48,11 +67,33 @@ function createPage() {
   return page;
 }
 
+// Update page number badges
+function updatePageNumbers() {
+  const pages = document.querySelectorAll('#content .print-page');
+  pages.forEach((page, i) => {
+    const badge = page.querySelector('.page-badge');
+    if (badge) badge.textContent = (i + 1) + ' / ' + pages.length;
+  });
+}
+
+// Remove empty pages (except the first one)
+function cleanupEmptyPages() {
+  const pages = Array.from(document.querySelectorAll('#content .print-page'));
+  for (let i = pages.length - 1; i >= 1; i--) {
+    const hasSelected = pages[i].querySelector('form.selected');
+    if (!hasSelected) {
+      pages[i].remove();
+    }
+  }
+  updatePageNumbers();
+}
+
 // Add a new page to the content area
 function addPage() {
   const content = document.getElementById('content');
   content.appendChild(createPage());
   updateCounter();
+  updatePageNumbers();
 }
 
 // Get all empty (unselected) form slots across all pages
@@ -87,13 +128,28 @@ function clearPDF() {
 }
 
 function printPage() {
-  window.print();
+  const labels = document.querySelectorAll('form.selected').length;
+  if (labels === 0) {
+    alert('印刷する伝票がありません');
+    return;
+  }
+  const pages = document.querySelectorAll('#content .print-page');
+  // Count pages that have at least one selected form
+  const filledPages = Array.from(pages).filter((p) => p.querySelector('form.selected')).length;
+  const perPage = getSlotsPerPage();
+  const saved = labels - filledPages;
+  const msg = 'A4 ' + filledPages + '枚に ' + labels + '枚の伝票を印刷します。' +
+    (saved > 0 ? '\n(' + saved + '枚の用紙を節約!)' : '');
+  if (confirm(msg)) {
+    window.print();
+  }
 }
 
 function updateCounter() {
   const selected = document.querySelectorAll('form.selected').length;
   document.querySelector('#file-counter').textContent = selected;
   updateSavedCounter(selected);
+  updatePageNumbers();
 }
 
 // Paper saving counter

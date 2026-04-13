@@ -148,6 +148,7 @@ body {
 
 /* Print page: A4 aspect ratio container */
 .print-page {
+  position: relative;
   width: 100%;
   max-width: 600px;
   aspect-ratio: 210 / 297;
@@ -192,6 +193,48 @@ body {
 #content[data-layout="2"] .print-page form canvas {
   width: 100%;
   height: 200%;
+}
+
+/* Page badge */
+.page-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 5;
+  font-size: 10px;
+  color: #999;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* Slot remove button */
+.slot-remove {
+  display: none;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 10;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.slot-remove:hover {
+  background: #e63946;
+}
+
+form.selected .slot-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Form interactions */
@@ -658,4 +701,50 @@ body.dragging .dropzone {
 
 .dropzone.loading .dropzone-inner {
   color: var(--accent);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --card-border: #333;
+    --dropzone-border: #444;
+    --dropzone-bg: #1e1e1e;
+    --dropzone-icon: #666;
+  }
+
+  body { color: #e0e0e0; }
+
+  .print-page {
+    background: #1e1e1e;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .dropzone:hover {
+    background-color: #252540;
+  }
+
+  .page-badge {
+    background: rgba(30, 30, 30, 0.8);
+    color: #666;
+  }
+
+  .btn-add-page {
+    background: #1e1e1e;
+    color: #999;
+    border-color: #444;
+  }
+
+  #about, #about h2, #about h3 { color: #e0e0e0; }
+  #about p, #about dd { color: #aaa; }
+  .carrier-list li { background: #1e1e1e; border-color: #333; color: #aaa; }
+  .recommend-card { background: #1e1e1e; border-color: #333; color: #ddd; }
+  .recommend-desc { color: #777; }
+  .modal-content { background: #1e1e1e; color: #e0e0e0; }
+  .modal-content h2 { color: #e0e0e0; }
+  .modal-content ol { color: #aaa; }
+  .modal-close { color: #666; }
+  .modal-close:hover { color: #ddd; }
+  .modal-note { background: #162316; color: #6ee7b7; }
+  .modal-shortcuts kbd { background: #333; border-color: #555; color: #ccc; }
 }
