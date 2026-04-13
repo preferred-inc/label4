@@ -151,12 +151,21 @@ body {
   padding: 8px;
 }
 
-/* Cards */
+/* Cards - 4-up layout (default) */
 #content form {
   position: relative;
   width: 50%;
   aspect-ratio: 210 / 297;
   overflow: clip;
+}
+
+/* 2-up layout */
+#content[data-layout="2"] form {
+  width: 100%;
+}
+
+#content[data-layout="2"] form:nth-child(n+3) {
+  display: none;
 }
 
 #content form input[type="file"] {
@@ -234,6 +243,13 @@ body {
   height: 200%;
 }
 
+/* AdSense slot */
+#ad-slot {
+  max-width: 640px;
+  margin: 16px auto 0;
+  padding: 0 16px;
+}
+
 /* About (SEO section) */
 #about {
   padding: 24px 16px;
@@ -278,6 +294,29 @@ body {
   line-height: 1.7;
   margin: 0 0 8px;
   grid-column: span 1;
+}
+
+#about h3 {
+  font-size: 14px;
+  color: #1a1a2e;
+  margin: 16px 0 8px;
+}
+
+.carrier-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.carrier-list li {
+  font-size: 12px;
+  padding: 4px 10px;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  color: #555;
 }
 
 @media (max-width: 480px) {
@@ -462,6 +501,13 @@ body {
 
 .modal-note i {
   color: #22c55e;
+}
+
+.modal-carriers {
+  margin-top: 10px;
+  font-size: 11px;
+  color: #999;
+  text-align: center;
 }
 
 /* Loading state */

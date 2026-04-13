@@ -16,6 +16,7 @@
   }
 
   #header,
+  #ad-slot,
   #about,
   #recommend,
   #content form input[type="file"],
@@ -24,6 +25,11 @@
   #content form.selected:active label,
   #footer,
   .modal {
+    display: none !important;
+  }
+
+  /* 2-up print: hide slots 3-4 */
+  #content[data-layout="2"] form:nth-child(n+3) {
     display: none !important;
   }
 }

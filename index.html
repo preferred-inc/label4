@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Label4 - クリックポスト伝票を4面付けでA4印刷 | 無料ウェブアプリ</title>
-<meta name="description" content="Label4はクリックポストの伝票PDFを最大4枚、A4用紙1枚にまとめて印刷できる無料ウェブアプリです。ダウンロード不要・登録不要・データ送信なしで安心。用紙とインクを節約できます。">
-<meta name="keywords" content="クリックポスト,伝票印刷,4面付け,A4印刷,ClickPost,送り状,ラベル印刷,無料,ウェブアプリ,用紙節約">
+<title>Label4 - クリックポスト・レターパック・ゆうパケット伝票を4面付けA4印刷 | 無料</title>
+<meta name="description" content="Label4はクリックポスト・レターパック・ゆうパケット・ネコポス等の伝票PDFを最大4枚、A4用紙1枚にまとめて印刷できる無料ウェブアプリ。2面付け・4面付け対応。登録不要・データ送信なし。">
+<meta name="keywords" content="クリックポスト,伝票印刷,4面付け,2面付け,A4印刷,ClickPost,レターパック,ゆうパケット,ネコポス,スマートレター,送り状,ラベル印刷,無料,ウェブアプリ,用紙節約,面付け印刷">
 <meta name="author" content="株式会社プリファード">
 <meta name="theme-color" content="#1a1a2e">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://preferred-inc.github.io/label4/">
 
 <!-- Open Graph -->
-<meta property="og:title" content="Label4 - クリックポスト伝票を4面付けでA4印刷">
-<meta property="og:description" content="クリックポストの伝票PDFを最大4枚、A4用紙1枚にまとめて印刷。ダウンロード不要・登録不要・データ送信なしの無料ウェブアプリ。">
+<meta property="og:title" content="Label4 - 伝票PDFを4面付けでA4印刷する無料ツール">
+<meta property="og:description" content="クリックポスト・レターパック・ゆうパケット等の伝票PDFを最大4枚、A4用紙1枚にまとめて印刷。登録不要・データ送信なし。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://preferred-inc.github.io/label4/">
 <meta property="og:site_name" content="Label4">
@@ -24,8 +24,8 @@
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Label4 - クリックポスト伝票を4面付けでA4印刷">
-<meta name="twitter:description" content="クリックポストの伝票PDFを最大4枚、A4用紙1枚にまとめて印刷。無料・登録不要・データ送信なし。">
+<meta name="twitter:title" content="Label4 - 伝票PDFを4面付けでA4印刷する無料ツール">
+<meta name="twitter:description" content="クリックポスト・レターパック等の伝票PDFを最大4枚、A4にまとめて印刷。無料・登録不要。">
 <meta name="twitter:image" content="https://preferred-inc.github.io/label4/ogp.png">
 
 <!-- Structured Data -->
@@ -35,7 +35,7 @@
   "@type": "WebApplication",
   "name": "Label4",
   "url": "https://preferred-inc.github.io/label4/",
-  "description": "クリックポストの伝票PDFを最大4枚、A4用紙1枚にまとめて印刷できる無料ウェブアプリ",
+  "description": "クリックポスト・レターパック・ゆうパケット・ネコポス等の伝票PDFを最大4枚、A4用紙1枚にまとめて印刷できる無料ウェブアプリ",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "All",
   "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -52,6 +52,9 @@
   "inLanguage": "ja",
   "featureList": [
     "クリックポスト伝票PDF 4面付け印刷",
+    "レターパック・ゆうパケット・ネコポス対応",
+    "2面付け・4面付けレイアウト切り替え",
+    "複数ページPDF自動展開",
     "A4用紙1枚にまとめて印刷",
     "ダウンロード・インストール不要",
     "ユーザー登録不要",
@@ -92,6 +95,9 @@
       <span class="file-info"><span id="current-file"></span>&nbsp;(<span id="file-counter">0</span>)</span>
     </div>
     <div class="header-right">
+      <button class="btn-icon" id="layout-toggle" onclick="toggleLayout()" title="レイアウト切替">
+        <i class="fa-solid fa-table-cells"></i>
+      </button>
       <button class="btn-icon" onclick="printPage()" title="印刷">
         <i class="fa-solid fa-print"></i>
       </button>
@@ -105,7 +111,7 @@
   </header>
 
   <div id="container">
-    <main id="content">
+    <main id="content" data-layout="4">
       <form>
         <canvas width="2480" height="3508"></canvas>
         <label for="input-1">
@@ -157,10 +163,28 @@
     </main>
   </div>
 
+  <!-- AdSense placeholder: uncomment and replace ca-pub-XXXXX when approved -->
+  <!-- <div id="ad-slot">
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXX" data-ad-slot="XXXXX" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div> -->
+
   <!-- SEO: crawlable text content -->
   <section id="about" aria-label="Label4について">
-    <h2>Label4 - クリックポスト伝票4面付け印刷ツール</h2>
-    <p>Label4は、日本郵便のクリックポスト伝票PDFを最大4枚まとめてA4用紙1枚に印刷できる無料ウェブアプリです。</p>
+    <h2>Label4 - 伝票PDF面付け印刷ツール</h2>
+    <p>Label4は、日本郵便やヤマト運輸の各種伝票PDFをA4用紙1枚にまとめて印刷できる無料ウェブアプリです。2面付け・4面付けのレイアウト切り替えに対応。複数ページのPDFも自動で展開します。</p>
+
+    <h3>対応する配送サービス</h3>
+    <ul class="carrier-list">
+      <li>クリックポスト（日本郵便）</li>
+      <li>レターパックライト / レターパックプラス</li>
+      <li>ゆうパケット / ゆうパケットポスト</li>
+      <li>スマートレター</li>
+      <li>ネコポス（ヤマト運輸）</li>
+      <li>飛脚メール便（佐川急便）</li>
+      <li>その他 PDF形式の伝票・ラベル全般</li>
+    </ul>
+
     <dl>
       <dt><i class="fa-solid fa-scissors"></i> 用紙・インク節約</dt>
       <dd>4枚の伝票を1枚のA4用紙に面付け。用紙コストを最大75%削減できます。</dd>
@@ -205,6 +229,8 @@
     <span>運営: <a href="https://pref.co.jp" target="_blank" rel="noopener">株式会社プリファード</a></span>
     <span class="footer-sep">|</span>
     <span>&copy; 2025 Preferred-Inc</span>
+    <span class="footer-sep">|</span>
+    <a href="/label4/blog/">使い方ガイド</a>
   </footer>
 </div>
 
@@ -215,10 +241,12 @@
     <h2>Label4 の使い方</h2>
     <ol>
       <li>枠をクリック（タップ）してPDFファイルを選択</li>
-      <li>最大4枚の伝票を配置できます</li>
+      <li>複数ページのPDFは自動で次のスロットに展開</li>
+      <li><i class="fa-solid fa-table-cells"></i> で2面 / 4面を切り替え</li>
       <li>右上の <i class="fa-solid fa-print"></i> ボタンでA4用紙に印刷</li>
     </ol>
     <p class="modal-note"><i class="fa-solid fa-lock"></i> データは一切サーバに送信されません</p>
+    <p class="modal-carriers">対応: クリックポスト / レターパック / ゆうパケット / ネコポス / その他PDF全般</p>
   </div>
 </div>
 
