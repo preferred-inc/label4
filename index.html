@@ -110,8 +110,8 @@
     </div>
   </header>
 
-  <div id="container">
-    <main id="content" data-layout="4">
+  <main id="content" data-layout="4">
+    <div class="print-page">
       <form>
         <canvas width="2480" height="3508"></canvas>
         <label for="input-1">
@@ -160,7 +160,13 @@
           </div>
         </label>
       </form>
-    </main>
+    </div>
+  </main>
+
+  <div id="page-actions">
+    <button onclick="addPage()" class="btn-add-page">
+      <i class="fa-solid fa-plus"></i> ページ追加
+    </button>
   </div>
 
   <!-- AdSense placeholder: uncomment and replace ca-pub-XXXXX when approved -->

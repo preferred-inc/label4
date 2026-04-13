@@ -2,7 +2,7 @@
 Theme: Label4
 Description: A4用紙にクリックポスト伝票を4面付け印刷するウェブアプリ
 Author: Preferred-Inc
-Version: 1.0
+Version: 2.0
 License: MIT License
 */
 
@@ -43,11 +43,14 @@ body {
   display: flex;
   flex-direction: column;
   width: 100dvw;
-  height: 100dvh;
+  min-height: 100dvh;
 }
 
 /* Header */
 #header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
   display: flex;
   align-items: center;
   width: 100%;
@@ -133,53 +136,70 @@ body {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Container */
-#container {
-  contain: strict;
+/* Content area: scrollable, contains print pages */
+#content {
   flex: 1;
-  max-width: 100%;
-  aspect-ratio: 210 / 297;
-  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 
-#content {
+/* Print page: A4 aspect ratio container */
+.print-page {
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 210 / 297;
   display: flex;
   flex-wrap: wrap;
   align-content: center;
-  width: 100%;
-  height: 100%;
-  padding: 8px;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 4px;
+  overflow: hidden;
 }
 
-/* Cards - 4-up layout (default) */
-#content form {
+/* Form slots - 4-up layout (default) */
+.print-page form {
   position: relative;
   width: 50%;
   aspect-ratio: 210 / 297;
   overflow: clip;
 }
 
-/* 2-up layout: 2 labels stacked vertically, each larger */
-#content[data-layout="2"] form {
+/* 2-up layout */
+#content[data-layout="2"] .print-page form {
   width: 100%;
   height: 50%;
   aspect-ratio: auto;
 }
 
-#content[data-layout="2"] form:nth-child(n+3) {
+#content[data-layout="2"] .print-page form:nth-child(n+3) {
   display: none;
 }
 
-#content[data-layout="2"] form canvas {
+/* Canvas */
+.print-page form canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+}
+
+#content[data-layout="2"] .print-page form canvas {
   width: 100%;
   height: 200%;
 }
 
-#content form input[type="file"] {
+/* Form interactions */
+.print-page form input[type="file"] {
   display: none;
 }
 
-#content form label {
+.print-page form label {
   position: absolute;
   top: 0;
   left: 0;
@@ -191,11 +211,11 @@ body {
   transition: opacity var(--transition);
 }
 
-#content form.selected label {
+.print-page form.selected label {
   opacity: 0;
 }
 
-#content form.selected:active label {
+.print-page form.selected:active label {
   opacity: 1;
 }
 
@@ -241,13 +261,30 @@ body {
   text-transform: uppercase;
 }
 
-/* Canvas */
-#content form canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 200%;
-  height: 200%;
+/* Page actions */
+#page-actions {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 16px;
+}
+
+.btn-add-page {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border: 2px dashed var(--dropzone-border);
+  border-radius: var(--radius);
+  background: #fff;
+  color: #666;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition);
+}
+
+.btn-add-page:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* AdSense slot */
@@ -399,8 +436,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   width: 100%;
-  height: 32px;
+  min-height: 32px;
+  padding: 8px;
   background-color: var(--footer-bg);
   color: var(--footer-text);
   font-size: 11px;

@@ -8,18 +8,91 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-function clearPDF() {
-  document.querySelectorAll('#content form input[type="file"]').forEach((target) => {
-    target.value = '';
-    target.form.classList.remove('selected');
-  });
+let slotCounter = 4; // for generating unique input IDs
 
-  document.querySelector('#current-file').textContent = '';
-  document.querySelector('#file-counter').textContent = '0';
+function getLayout() {
+  return document.getElementById('content').dataset.layout || '4';
+}
+
+function getSlotsPerPage() {
+  return getLayout() === '2' ? 2 : 4;
+}
+
+// Create a single form slot
+function createSlot() {
+  slotCounter++;
+  const id = 'input-' + slotCounter;
+  const form = document.createElement('form');
+  form.innerHTML =
+    '<canvas width="2480" height="3508"></canvas>' +
+    '<label for="' + id + '">' +
+      '<input id="' + id + '" type="file" accept="application/pdf" onchange="inputPDF.call(this)">' +
+      '<div class="dropzone">' +
+        '<div class="dropzone-inner">' +
+          '<i class="fa-solid fa-file-arrow-up"></i>' +
+          '<span>PDF</span>' +
+        '</div>' +
+      '</div>' +
+    '</label>';
+  return form;
+}
+
+// Create a new page with empty slots
+function createPage() {
+  const page = document.createElement('div');
+  page.className = 'print-page';
+  const count = getSlotsPerPage();
+  for (let i = 0; i < count; i++) {
+    page.appendChild(createSlot());
+  }
+  return page;
+}
+
+// Add a new page to the content area
+function addPage() {
+  const content = document.getElementById('content');
+  content.appendChild(createPage());
+  updateCounter();
+}
+
+// Get all empty (unselected) form slots across all pages
+function getEmptySlots() {
+  return Array.from(document.querySelectorAll('#content form')).filter(
+    (form) => !form.classList.contains('selected')
+  );
+}
+
+// Ensure there's always at least one empty slot available (auto-add page)
+function ensureEmptySlot() {
+  if (getEmptySlots().length === 0) {
+    addPage();
+  }
+}
+
+function clearPDF() {
+  const content = document.getElementById('content');
+  // Remove all pages except the first
+  const pages = content.querySelectorAll('.print-page');
+  for (let i = 1; i < pages.length; i++) {
+    pages[i].remove();
+  }
+  // Reset first page slots
+  if (pages[0]) {
+    pages[0].querySelectorAll('form').forEach((form) => {
+      form.querySelector('input[type="file"]').value = '';
+      form.classList.remove('selected');
+    });
+  }
+  updateCounter();
 }
 
 function printPage() {
   window.print();
+}
+
+function updateCounter() {
+  const selected = document.querySelectorAll('form.selected').length;
+  document.querySelector('#file-counter').textContent = selected;
 }
 
 // Layout toggle: 2-up / 4-up
@@ -33,6 +106,45 @@ function toggleLayout() {
   icon.className = next === '4'
     ? 'fa-solid fa-table-cells'
     : 'fa-solid fa-table-cells-large';
+
+  // Rebuild pages to match new slot count
+  rebuildPages();
+}
+
+// Rebuild pages when layout changes
+function rebuildPages() {
+  const content = document.getElementById('content');
+  // Collect all forms with data (selected ones)
+  const filledForms = Array.from(content.querySelectorAll('form.selected'));
+  const canvasData = filledForms.map((form) => {
+    const canvas = form.querySelector('canvas');
+    return { width: canvas.width, height: canvas.height, canvas };
+  });
+
+  // Clear all pages
+  content.innerHTML = '';
+
+  // Create first page
+  content.appendChild(createPage());
+
+  // Re-place filled canvases into new pages
+  const slotsPerPage = getSlotsPerPage();
+  canvasData.forEach((data, i) => {
+    const pageIndex = Math.floor(i / slotsPerPage);
+    while (content.children.length <= pageIndex) {
+      content.appendChild(createPage());
+    }
+    const page = content.children[pageIndex];
+    const targetForm = page.querySelectorAll('form')[i % slotsPerPage];
+    const targetCanvas = targetForm.querySelector('canvas');
+    const ctx = targetCanvas.getContext('2d');
+    targetCanvas.width = data.width;
+    targetCanvas.height = data.height;
+    ctx.drawImage(data.canvas, 0, 0);
+    targetForm.classList.add('selected');
+  });
+
+  updateCounter();
 }
 
 // Render a single PDF page into a form slot
@@ -50,13 +162,6 @@ function renderPage(page, form) {
       viewport,
     }).promise.then(resolve);
   });
-}
-
-// Get all empty (unselected) form slots
-function getEmptySlots() {
-  return Array.from(document.querySelectorAll('#content form')).filter(
-    (form) => !form.classList.contains('selected')
-  );
 }
 
 function inputPDF() {
@@ -92,31 +197,29 @@ function inputPDF() {
       dropzone.classList.remove('loading');
       form.classList.add('selected');
 
-      // Remaining pages auto-fill into empty slots
-      if (totalPages > 1) {
+      // Remaining pages auto-fill into empty slots, adding pages as needed
+      for (let i = 2; i <= totalPages; i++) {
+        ensureEmptySlot();
         const emptySlots = getEmptySlots();
-        const pagesToFill = Math.min(totalPages - 1, emptySlots.length);
+        if (emptySlots.length === 0) break;
 
-        for (let i = 0; i < pagesToFill; i++) {
-          const pageNum = i + 2;
-          const targetForm = emptySlots[i];
-          const targetDropzone = targetForm.querySelector('.dropzone');
-          const targetIcon = targetForm.querySelector('.dropzone-inner i');
+        const targetForm = emptySlots[0];
+        const targetDropzone = targetForm.querySelector('.dropzone');
+        const targetIcon = targetForm.querySelector('.dropzone-inner i');
 
-          targetDropzone.classList.add('loading');
-          targetIcon.className = 'fa-solid fa-spinner fa-spin';
+        targetDropzone.classList.add('loading');
+        targetIcon.className = 'fa-solid fa-spinner fa-spin';
 
-          const page = await pdf.getPage(pageNum);
-          await renderPage(page, targetForm);
+        const page = await pdf.getPage(i);
+        await renderPage(page, targetForm);
 
-          targetIcon.className = 'fa-solid fa-file-arrow-up';
-          targetDropzone.classList.remove('loading');
-          targetForm.classList.add('selected');
-        }
+        targetIcon.className = 'fa-solid fa-file-arrow-up';
+        targetDropzone.classList.remove('loading');
+        targetForm.classList.add('selected');
       }
 
       document.querySelector('#current-file').textContent = file.name;
-      document.querySelector('#file-counter').textContent = document.querySelectorAll('form.selected').length;
+      updateCounter();
     }).catch(function () {
       icon.className = 'fa-solid fa-file-arrow-up';
       dropzone.classList.remove('loading');
