@@ -159,13 +159,20 @@ body {
   overflow: clip;
 }
 
-/* 2-up layout */
+/* 2-up layout: 2 labels stacked vertically, each larger */
 #content[data-layout="2"] form {
   width: 100%;
+  height: 50%;
+  aspect-ratio: auto;
 }
 
 #content[data-layout="2"] form:nth-child(n+3) {
   display: none;
+}
+
+#content[data-layout="2"] form canvas {
+  width: 100%;
+  height: 200%;
 }
 
 #content form input[type="file"] {
