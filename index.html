@@ -1,11 +1,60 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" prefix="og: https://ogp.me/ns#">
 <head>
-<title>Label4 - クリックポスト伝票印刷</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="クリックポストの伝票PDFを最大4枚、A4用紙1枚にまとめて印刷できるウェブアプリ">
+<title>Label4 - クリックポスト伝票を4面付けでA4印刷 | 無料ウェブアプリ</title>
+<meta name="description" content="Label4はクリックポストの伝票PDFを最大4枚、A4用紙1枚にまとめて印刷できる無料ウェブアプリです。ダウンロード不要・登録不要・データ送信なしで安心。用紙とインクを節約できます。">
+<meta name="keywords" content="クリックポスト,伝票印刷,4面付け,A4印刷,ClickPost,送り状,ラベル印刷,無料,ウェブアプリ,用紙節約">
+<meta name="author" content="Preferred-Inc">
 <meta name="theme-color" content="#1a1a2e">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://preferred-inc.github.io/label4/">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Label4 - クリックポスト伝票を4面付けでA4印刷">
+<meta property="og:description" content="クリックポストの伝票PDFを最大4枚、A4用紙1枚にまとめて印刷。ダウンロード不要・登録不要・データ送信なしの無料ウェブアプリ。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://preferred-inc.github.io/label4/">
+<meta property="og:site_name" content="Label4">
+<meta property="og:locale" content="ja_JP">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Label4 - クリックポスト伝票を4面付けでA4印刷">
+<meta name="twitter:description" content="クリックポストの伝票PDFを最大4枚、A4用紙1枚にまとめて印刷。無料・登録不要・データ送信なし。">
+
+<!-- Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Label4",
+  "url": "https://preferred-inc.github.io/label4/",
+  "description": "クリックポストの伝票PDFを最大4枚、A4用紙1枚にまとめて印刷できる無料ウェブアプリ",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires JavaScript. Requires HTML5.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+  },
+  "author": {
+    "@type": "Organization",
+    "name": "Preferred-Inc"
+  },
+  "inLanguage": "ja",
+  "featureList": [
+    "クリックポスト伝票PDF 4面付け印刷",
+    "A4用紙1枚にまとめて印刷",
+    "ダウンロード・インストール不要",
+    "ユーザー登録不要",
+    "データをサーバに送信しないプライバシー安全設計"
+  ]
+}
+</script>
+
 <link rel="apple-touch-icon" sizes="180x180" href="/label4/apple-touch-icon.png">
 <link rel="manifest" href="/label4/manifest.json" crossorigin="use-credentials">
 <script type="text/javascript" src="/label4/build/pdf.js"></script>
@@ -101,8 +150,24 @@
     </main>
   </div>
 
+  <!-- SEO: crawlable text content (hidden during app use, visible to search engines) -->
+  <section id="about" aria-label="Label4について">
+    <h2>Label4 - クリックポスト伝票4面付け印刷ツール</h2>
+    <p>Label4は、日本郵便のクリックポスト伝票PDFを最大4枚まとめてA4用紙1枚に印刷できる無料ウェブアプリです。</p>
+    <dl>
+      <dt><i class="fa-solid fa-scissors"></i> 用紙・インク節約</dt>
+      <dd>4枚の伝票を1枚のA4用紙に面付け。用紙コストを最大75%削減できます。</dd>
+      <dt><i class="fa-solid fa-bolt"></i> インストール不要</dt>
+      <dd>ブラウザだけで動作。ダウンロードもユーザー登録も不要ですぐに使えます。</dd>
+      <dt><i class="fa-solid fa-shield-halved"></i> プライバシー安全</dt>
+      <dd>PDFデータはブラウザ内のみで処理。サーバへのデータ送信は一切ありません。</dd>
+      <dt><i class="fa-solid fa-mobile-screen"></i> どのデバイスでも</dt>
+      <dd>PC・タブレット・スマートフォン対応。PWAとしてホーム画面に追加も可能です。</dd>
+    </dl>
+  </section>
+
   <footer id="footer">
-    <span>&copy; 2025 Label4</span>
+    <span>&copy; 2025 <a href="https://github.com/preferred-inc" target="_blank" rel="noopener">Preferred-Inc</a></span>
   </footer>
 </div>
 
