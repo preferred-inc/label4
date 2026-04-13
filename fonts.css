@@ -1,0 +1,32 @@
+@font-face {
+  font-family: 'MS Gothic';
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/bizudgothic/v12/daafSTouBF7RUjnbt8p3LuKttQ.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'MS PGothic';
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/bizudpgothic/v14/hES36X5pHAIBjmS84VL0Bue83nU.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'MS Gothic';
+  font-style: normal;
+  font-weight: bold;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/bizudgothic/v12/daafSTouBF7RUjnbt8p3LuKttQ.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'MS PGothic';
+  font-style: normal;
+  font-weight: bold;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/bizudpgothic/v14/hES36X5pHAIBjmS84VL0Bue83nU.ttf) format('truetype');
+}
+

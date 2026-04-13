@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title>Label4 - クリックポスト伝票印刷</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="クリックポストの伝票PDFを最大4枚、A4用紙1枚にまとめて印刷できるウェブアプリ">
+<meta name="theme-color" content="#1a1a2e">
+<link rel="apple-touch-icon" sizes="180x180" href="/label4/apple-touch-icon.png">
+<link rel="manifest" href="/label4/manifest.json" crossorigin="use-credentials">
+<script type="text/javascript" src="/label4/build/pdf.js"></script>
+<script type="text/javascript">
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '/label4/build/pdf.worker.js';
+</script>
+<script type="text/javascript" src="/label4/script.js" defer></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="/label4/fonts.css">
+<link rel="stylesheet" href="/label4/style.css">
+<link rel="stylesheet" href="/label4/print.css" media="print">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link rel="preload" as="font" href="https://fonts.gstatic.com/s/bizudgothic/v12/daafSTouBF7RUjnbt8p3LuKttQ.ttf" crossorigin="anonymous">
+<link rel="preload" as="font" href="https://fonts.gstatic.com/s/bizudpgothic/v14/hES36X5pHAIBjmS84VL0Bue83nU.ttf" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+<div id="wrapper">
+  <header id="header">
+    <div class="header-left">
+      <a href="https://clickpost.jp/" target="_blank" rel="noopener" class="clickpost-link" title="クリックポスト">
+        <i class="fa-solid fa-envelope"></i>
+      </a>
+    </div>
+    <div class="header-center">
+      <h1 class="brand">Label4</h1>
+      <span class="file-info"><span id="current-file"></span>&nbsp;(<span id="file-counter">0</span>)</span>
+    </div>
+    <div class="header-right">
+      <button class="btn-icon" onclick="printPage()" title="印刷">
+        <i class="fa-solid fa-print"></i>
+      </button>
+      <button class="btn-icon" onclick="clearPDF()" title="すべて削除">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+      <button class="btn-icon" onclick="showHelp()" title="ヘルプ">
+        <i class="fa-solid fa-circle-question"></i>
+      </button>
+    </div>
+  </header>
+
+  <div id="container">
+    <main id="content">
+      <form>
+        <canvas width="2480" height="3508"></canvas>
+        <label for="input-1">
+          <input id="input-1" type="file" accept="application/pdf" onchange="inputPDF.call(this)">
+          <div class="dropzone">
+            <div class="dropzone-inner">
+              <i class="fa-solid fa-file-arrow-up"></i>
+              <span>PDF</span>
+            </div>
+          </div>
+        </label>
+      </form>
+      <form>
+        <canvas width="2480" height="3508"></canvas>
+        <label for="input-2">
+          <input id="input-2" type="file" accept="application/pdf" onchange="inputPDF.call(this)">
+          <div class="dropzone">
+            <div class="dropzone-inner">
+              <i class="fa-solid fa-file-arrow-up"></i>
+              <span>PDF</span>
+            </div>
+          </div>
+        </label>
+      </form>
+      <form>
+        <canvas width="2480" height="3508"></canvas>
+        <label for="input-3">
+          <input id="input-3" type="file" accept="application/pdf" onchange="inputPDF.call(this)">
+          <div class="dropzone">
+            <div class="dropzone-inner">
+              <i class="fa-solid fa-file-arrow-up"></i>
+              <span>PDF</span>
+            </div>
+          </div>
+        </label>
+      </form>
+      <form>
+        <canvas width="2480" height="3508"></canvas>
+        <label for="input-4">
+          <input id="input-4" type="file" accept="application/pdf" onchange="inputPDF.call(this)">
+          <div class="dropzone">
+            <div class="dropzone-inner">
+              <i class="fa-solid fa-file-arrow-up"></i>
+              <span>PDF</span>
+            </div>
+          </div>
+        </label>
+      </form>
+    </main>
+  </div>
+
+  <footer id="footer">
+    <span>&copy; 2025 Label4</span>
+  </footer>
+</div>
+
+<!-- Help Modal -->
+<div id="help-modal" class="modal" onclick="closeHelp(event)">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeHelp()">&times;</button>
+    <h2>Label4 の使い方</h2>
+    <ol>
+      <li>枠をクリック（タップ）してPDFファイルを選択</li>
+      <li>最大4枚の伝票を配置できます</li>
+      <li>右上の <i class="fa-solid fa-print"></i> ボタンでA4用紙に印刷</li>
+    </ol>
+    <p class="modal-note"><i class="fa-solid fa-lock"></i> データは一切サーバに送信されません</p>
+  </div>
+</div>
+
+<script type="text/javascript" src="/label4/dialog.js"></script>
+</body>
+</html>

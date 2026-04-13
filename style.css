@@ -1,0 +1,346 @@
+/*
+Theme: Label4
+Description: A4用紙にクリックポスト伝票を4面付け印刷するウェブアプリ
+Version: 1.0
+License: GNU General Public License v3 or Later
+*/
+
+:root {
+  --bg: #f0f2f5;
+  --header-bg: #1a1a2e;
+  --header-text: #e0e0e0;
+  --accent: #4361ee;
+  --card-border: #e0e0e0;
+  --dropzone-border: #c0c4cc;
+  --dropzone-hover: #4361ee;
+  --dropzone-bg: #f8f9fc;
+  --dropzone-icon: #9ca3af;
+  --footer-bg: #1a1a2e;
+  --footer-text: #9ca3af;
+  --shadow-hover: 0 4px 12px rgba(67, 97, 238, 0.15);
+  --radius: 8px;
+  --transition: 0.2s ease;
+}
+
+html,
+body {
+  font: 14px/1.5 'BIZ UDPGothic', 'MS PGothic', sans-serif;
+  box-sizing: border-box;
+  background-color: var(--bg);
+  color: #333;
+}
+
+*,
+*:before,
+*:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+#wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100dvw;
+  height: 100dvh;
+}
+
+/* Header */
+#header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  padding: 0 12px;
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  gap: 12px;
+}
+
+.header-left {
+  flex-shrink: 0;
+}
+
+.header-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.file-info {
+  font-size: 12px;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#current-file:empty::before {
+  content: '\9078\629E\3055\308C\3066\3044\307E\305B\3093';
+}
+
+.header-right {
+  flex-shrink: 0;
+  display: flex;
+  gap: 4px;
+}
+
+.clickpost-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: #e63946;
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color var(--transition);
+}
+
+.clickpost-link:hover {
+  background-color: #d62839;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--header-text);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.btn-icon:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Container */
+#container {
+  contain: strict;
+  flex: 1;
+  max-width: 100%;
+  aspect-ratio: 210 / 297;
+  margin: 0 auto;
+}
+
+#content {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+}
+
+/* Cards */
+#content form {
+  position: relative;
+  width: 50%;
+  aspect-ratio: 210 / 297;
+  overflow: clip;
+}
+
+#content form input[type="file"] {
+  display: none;
+}
+
+#content form label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  opacity: 1;
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+
+#content form.selected label {
+  opacity: 0;
+}
+
+#content form.selected:active label {
+  opacity: 1;
+}
+
+.dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 2px dashed var(--dropzone-border);
+  border-radius: var(--radius);
+  background-color: var(--dropzone-bg);
+  transition: border-color var(--transition), background-color var(--transition), box-shadow var(--transition);
+}
+
+.dropzone:hover {
+  border-color: var(--dropzone-hover);
+  background-color: #eef1ff;
+  box-shadow: var(--shadow-hover);
+}
+
+.dropzone-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--dropzone-icon);
+  transition: color var(--transition);
+}
+
+.dropzone:hover .dropzone-inner {
+  color: var(--accent);
+}
+
+.dropzone-inner i {
+  font-size: 28px;
+}
+
+.dropzone-inner span {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Canvas */
+#content form canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+}
+
+/* Footer */
+#footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 32px;
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  font-size: 11px;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: modalIn 0.25s ease;
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  border: none;
+  background: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+  transition: color var(--transition);
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+.modal-content h2 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #1a1a2e;
+}
+
+.modal-content ol {
+  margin: 0 0 16px 20px;
+  line-height: 2;
+  color: #555;
+}
+
+.modal-content ol i {
+  color: var(--accent);
+  margin: 0 2px;
+}
+
+.modal-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background-color: #f0fdf4;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #166534;
+}
+
+.modal-note i {
+  color: #22c55e;
+}
+
+/* Loading state */
+.dropzone.loading {
+  border-color: var(--accent);
+  background-color: #eef1ff;
+}
+
+.dropzone.loading .dropzone-inner {
+  color: var(--accent);
+}

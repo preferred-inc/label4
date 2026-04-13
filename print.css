@@ -1,0 +1,27 @@
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  body,
+  #wrapper,
+  #container,
+  #content {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  #header,
+  #content form input[type="file"],
+  #content form label,
+  #content form.selected label,
+  #content form.selected:active label,
+  #footer,
+  .modal {
+    display: none !important;
+  }
+}
