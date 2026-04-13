@@ -431,6 +431,41 @@ body {
   }
 }
 
+/* Share buttons */
+#share {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 16px 20px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.share-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #fff;
+  transition: opacity var(--transition);
+}
+
+.share-btn:hover {
+  opacity: 0.85;
+}
+
+.share-x {
+  background: #000;
+}
+
+.share-line {
+  background: #06c755;
+}
+
 /* Footer */
 #footer {
   display: flex;
@@ -554,6 +589,18 @@ body {
   font-size: 11px;
   color: #999;
   text-align: center;
+}
+
+/* Drag & drop state */
+body.dragging .dropzone {
+  border-color: var(--accent);
+  background-color: #eef1ff;
+  animation: pulse 1s ease infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
 
 /* Loading state */

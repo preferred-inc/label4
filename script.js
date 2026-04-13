@@ -164,6 +164,104 @@ function renderPage(page, form) {
   });
 }
 
+// Drag & drop support
+function initDragDrop() {
+  document.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  });
+
+  document.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files).filter(
+      (f) => f.type === 'application/pdf'
+    );
+    if (files.length === 0) return;
+
+    files.forEach((file) => {
+      const emptySlots = getEmptySlots();
+      if (emptySlots.length === 0) {
+        addPage();
+      }
+      const slot = getEmptySlots()[0];
+      if (slot) {
+        loadPDFIntoSlot(file, slot);
+      }
+    });
+  });
+
+  // Visual feedback on dropzones
+  document.addEventListener('dragenter', () => {
+    document.body.classList.add('dragging');
+  });
+  document.addEventListener('dragleave', (e) => {
+    if (e.relatedTarget === null) {
+      document.body.classList.remove('dragging');
+    }
+  });
+  document.addEventListener('drop', () => {
+    document.body.classList.remove('dragging');
+  });
+}
+
+// Load a PDF file into a specific form slot
+function loadPDFIntoSlot(file, form) {
+  const dropzone = form.querySelector('.dropzone');
+  const icon = form.querySelector('.dropzone-inner i');
+
+  form.classList.remove('selected');
+  dropzone.classList.add('loading');
+  icon.className = 'fa-solid fa-spinner fa-spin';
+
+  const fileReader = new FileReader();
+  fileReader.onload = function () {
+    const pdfData = new Uint8Array(this.result);
+
+    pdfjsLib.getDocument({
+      data: pdfData,
+      cMapUrl: '/label4/web/cmaps/',
+      cMapPacked: true
+    }).promise.then(async function (pdf) {
+      const totalPages = pdf.numPages;
+
+      const page1 = await pdf.getPage(1);
+      await renderPage(page1, form);
+      icon.className = 'fa-solid fa-file-arrow-up';
+      dropzone.classList.remove('loading');
+      form.classList.add('selected');
+
+      for (let i = 2; i <= totalPages; i++) {
+        ensureEmptySlot();
+        const emptySlots = getEmptySlots();
+        if (emptySlots.length === 0) break;
+
+        const targetForm = emptySlots[0];
+        const targetDropzone = targetForm.querySelector('.dropzone');
+        const targetIcon = targetForm.querySelector('.dropzone-inner i');
+        targetDropzone.classList.add('loading');
+        targetIcon.className = 'fa-solid fa-spinner fa-spin';
+
+        const page = await pdf.getPage(i);
+        await renderPage(page, targetForm);
+        targetIcon.className = 'fa-solid fa-file-arrow-up';
+        targetDropzone.classList.remove('loading');
+        targetForm.classList.add('selected');
+      }
+
+      document.querySelector('#current-file').textContent = file.name;
+      updateCounter();
+    }).catch(function () {
+      icon.className = 'fa-solid fa-file-arrow-up';
+      dropzone.classList.remove('loading');
+    });
+  };
+
+  fileReader.readAsArrayBuffer(file);
+}
+
+// Initialize drag & drop on page load
+document.addEventListener('DOMContentLoaded', initDragDrop);
+
 function inputPDF() {
   const { form } = this;
   const dropzone = form.querySelector('.dropzone');
