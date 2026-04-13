@@ -128,6 +128,96 @@ document.addEventListener('DOMContentLoaded', () => {
   updateStatsBadge();
 });
 
+// --- Batch upload ---
+function batchUpload() {
+  document.getElementById('batch-input').click();
+}
+
+function handleBatchFiles(fileList) {
+  const files = Array.from(fileList).filter((f) => f.type === 'application/pdf');
+  if (files.length === 0) return;
+  files.forEach((file) => {
+    ensureEmptySlot();
+    const slot = getEmptySlots()[0];
+    if (slot) loadPDFIntoSlot(file, slot);
+  });
+}
+
+// --- PWA install prompt ---
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const banner = document.getElementById('pwa-banner');
+  if (banner && !localStorage.getItem('label4_pwa_dismissed')) {
+    banner.classList.add('show');
+  }
+});
+
+function installPWA() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+  }
+  dismissPWA();
+}
+
+function dismissPWA() {
+  const banner = document.getElementById('pwa-banner');
+  if (banner) banner.classList.remove('show');
+  try { localStorage.setItem('label4_pwa_dismissed', '1'); } catch {}
+}
+
+// --- Confetti ---
+function confetti() {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'confetti-canvas';
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;pointer-events:none;';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ['#4361ee', '#e63946', '#22c55e', '#f59e0b', '#8b5cf6'];
+  const pieces = [];
+  for (let i = 0; i < 80; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: -20 - Math.random() * 100,
+      w: 6 + Math.random() * 6,
+      h: 4 + Math.random() * 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vy: 2 + Math.random() * 4,
+      vx: -1 + Math.random() * 2,
+      rot: Math.random() * 360,
+      rv: -3 + Math.random() * 6,
+    });
+  }
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach((p) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rv;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rot * Math.PI) / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (frame < 120) {
+      requestAnimationFrame(draw);
+    } else {
+      canvas.remove();
+    }
+  }
+  draw();
+}
+
 let slotCounter = 4; // for generating unique input IDs
 
 function getLayout() {
@@ -259,6 +349,7 @@ function printPage() {
   const saved = labels - filledPages;
   if (confirm(t('printConfirm', filledPages, labels, saved))) {
     recordPrint(labels, filledPages);
+    confetti();
     window.print();
   }
 }
@@ -303,6 +394,7 @@ function exportPDF() {
   const saved = labels - filledPages;
   recordPrint(labels, filledPages);
   doc.save('label4-' + new Date().toISOString().slice(0, 10) + '.pdf');
+  confetti();
   toast(t('exported'), 'success');
 }
 

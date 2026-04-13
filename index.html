@@ -62,6 +62,46 @@
   ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "データはサーバに送信されますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "いいえ。PDFデータはすべてブラウザ内で処理され、サーバへの送信は一切ありません。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "クリックポスト以外の伝票にも使えますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい。PDF形式であればどの配送サービスの伝票にも対応しています。レターパック、ゆうパケット、ネコポス、スマートレター等でご利用いただけます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "スマートフォンでも使えますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい。PC・タブレット・スマートフォンのブラウザで動作します。PWA対応のため、ホーム画面に追加してアプリのように使うこともできます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "印刷がうまくいかない場合は？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ブラウザの印刷設定で余白なし・倍率100%・用紙サイズA4に設定してください。PDF保存ボタンで一度PDFファイルとして保存してから印刷する方法もあります。"
+      }
+    }
+  ]
+}
+</script>
 
 <link rel="icon" href="/label4/favicon.ico" sizes="32x32">
 <link rel="icon" href="/label4/icons/192x192.png" type="image/png">
@@ -176,6 +216,9 @@
   </main>
 
   <div id="page-actions">
+    <button onclick="batchUpload()" class="btn-add-page">
+      <i class="fa-solid fa-folder-open"></i> まとめて読込
+    </button>
     <button onclick="addPage()" class="btn-add-page">
       <i class="fa-solid fa-plus"></i> ページ追加
     </button>
@@ -214,6 +257,27 @@
       <dt><i class="fa-solid fa-mobile-screen"></i> どのデバイスでも</dt>
       <dd>PC・タブレット・スマートフォン対応。PWAとしてホーム画面に追加も可能です。</dd>
     </dl>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" aria-label="よくある質問">
+    <h3>よくある質問</h3>
+    <details>
+      <summary>データはサーバに送信されますか？</summary>
+      <p>いいえ。PDFデータはすべてブラウザ内で処理され、サーバへの送信は一切ありません。インターネット接続がなくても利用できます。</p>
+    </details>
+    <details>
+      <summary>クリックポスト以外の伝票にも使えますか？</summary>
+      <p>はい。PDF形式であればどの配送サービスの伝票にも対応しています。レターパック、ゆうパケット、ネコポス、スマートレター等でご利用いただけます。</p>
+    </details>
+    <details>
+      <summary>スマートフォンでも使えますか？</summary>
+      <p>はい。PC・タブレット・スマートフォンのブラウザで動作します。PWA対応のため、ホーム画面に追加してアプリのように使うこともできます。</p>
+    </details>
+    <details>
+      <summary>印刷がうまくいかない場合は？</summary>
+      <p>ブラウザの印刷設定で「余白なし」「倍率100%」「用紙サイズA4」に設定してください。また、PDF保存ボタンで一度PDFファイルとして保存してから印刷する方法もあります。</p>
+    </details>
   </section>
 
   <!-- Affiliate: 発送作業中のユーザーに関連商品を提案 -->
@@ -288,6 +352,16 @@
       <span><kbd>Ctrl</kbd>+<kbd>L</kbd> レイアウト切替</span>
     </div>
   </div>
+</div>
+
+<!-- Hidden batch file input -->
+<input type="file" id="batch-input" accept="application/pdf" multiple style="display:none" onchange="handleBatchFiles(this.files)">
+
+<!-- PWA install banner -->
+<div id="pwa-banner" class="pwa-banner">
+  <span>Label4 をホーム画面に追加</span>
+  <button onclick="installPWA()">追加</button>
+  <button onclick="dismissPWA()" class="pwa-dismiss">&times;</button>
 </div>
 
 <!-- Toast container -->

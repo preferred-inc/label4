@@ -481,6 +481,85 @@ form.selected .slot-remove {
   }
 }
 
+/* FAQ */
+#faq {
+  padding: 0 16px 24px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+#faq h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 12px;
+}
+
+#faq details {
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  background: #fff;
+}
+
+#faq summary {
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #333;
+}
+
+#faq summary:hover {
+  color: var(--accent);
+}
+
+#faq details p {
+  padding: 0 16px 12px;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* PWA install banner */
+.pwa-banner {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  padding: 12px 16px;
+  background: var(--header-bg);
+  color: #fff;
+  font-size: 13px;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.pwa-banner.show {
+  display: flex;
+}
+
+.pwa-banner button {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+}
+
+.pwa-banner .pwa-dismiss {
+  background: transparent;
+  color: #999;
+  font-size: 18px;
+  padding: 4px 8px;
+}
+
 /* Footer nav (carrier links) */
 #footer-nav {
   display: flex;
@@ -788,6 +867,10 @@ form.swap-active {
   #about, #about h2, #about h3 { color: #e0e0e0; }
   #about p, #about dd { color: #aaa; }
   .carrier-list li { background: #1e1e1e; border-color: #333; color: #aaa; }
+  #faq details { background: #1e1e1e; border-color: #333; }
+  #faq summary { color: #ddd; }
+  #faq details p { color: #aaa; }
+  #faq h3 { color: #e0e0e0; }
   .recommend-card { background: #1e1e1e; border-color: #333; color: #ddd; }
   .recommend-desc { color: #777; }
   .modal-content { background: #1e1e1e; color: #e0e0e0; }
