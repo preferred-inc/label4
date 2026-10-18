@@ -29,6 +29,15 @@ https://preferred-inc.github.io/label4/
 - GitHub Pages hosting
 - PWA with Workbox
 
+## Test
+
+サイトはビルド不要（静的ファイルをそのまま GitHub Pages で配信）。スモーク e2e のみ Node で回す。
+
+```bash
+npm install
+npx playwright test   # リポジトリ直下を /label4/ で配信し、主要ページ表示と PDF 読み込みを確認
+```
+
 ## License
 
 MIT - (c) 2025 Preferred-Inc
