@@ -1,4 +1,4 @@
-const CACHE_NAME = 'label4-v2';
+const CACHE_NAME = 'label4-v3';
 const PRECACHE_URLS = [
   '/label4/',
   '/label4/index.html',

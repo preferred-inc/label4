@@ -1,0 +1,11 @@
+{
+  "name": "label4",
+  "private": true,
+  "description": "Label4 のスモーク e2e 用（サイト自体はビルド不要の静的ファイル）",
+  "scripts": {
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "~1.64.0"
+  }
+}

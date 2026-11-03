@@ -573,7 +573,9 @@ function loadPDFIntoSlot(file, form) {
     pdfjsLib.getDocument({
       data: pdfData,
       cMapUrl: '/label4/web/cmaps/',
-      cMapPacked: true
+      cMapPacked: true,
+      // CVE-2024-4367 対策: 悪意あるフォントを含むPDFで任意JSが実行されるのを防ぐ(PDF.js 4.2.67 未満の推奨回避策)
+      isEvalSupported: false
     }).promise.then(async function (pdf) {
       const totalPages = pdf.numPages;
 
@@ -638,7 +640,9 @@ function inputPDF() {
     pdfjsLib.getDocument({
       data: pdfData,
       cMapUrl: '/label4/web/cmaps/',
-      cMapPacked: true
+      cMapPacked: true,
+      // CVE-2024-4367 対策: 悪意あるフォントを含むPDFで任意JSが実行されるのを防ぐ(PDF.js 4.2.67 未満の推奨回避策)
+      isEvalSupported: false
     }).promise.then(async function (pdf) {
       const totalPages = pdf.numPages;
 
