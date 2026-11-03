@@ -1,7 +1,7 @@
 // GitHub Pages（https://preferred-inc.github.io/label4/）と同じく、リポジトリ直下を /label4/ 配下で配信する e2e 専用サーバー。
 import { createServer } from "node:http";
 import { readFile, stat } from "node:fs/promises";
-import { extname, join, normalize } from "node:path";
+import { extname, join, normalize, resolve as resolvePath, sep } from "node:path";
 
 const root = process.cwd();
 const port = Number(process.env.PORT || 4174);
@@ -22,7 +22,9 @@ async function resolve(urlPath) {
   const path = decodeURIComponent(urlPath.split("?")[0]);
   if (!path.startsWith("/label4/") && path !== "/label4") return null;
   const rel = normalize(path.slice("/label4".length) || "/").replace(/^(\.\.[/\\])+/, "");
-  for (const p of [join(root, rel), join(root, rel, "index.html")]) {
+  for (const p of [join(root, rel), join(root, rel, "index.html")].map((f) => resolvePath(f))) {
+    // リポジトリ直下より外（%2e%2e 等で抜けたパス）は返さない
+    if (p !== root && !p.startsWith(root + sep)) continue;
     try {
       if ((await stat(p)).isFile()) return p;
     } catch {}
